@@ -1,0 +1,22 @@
+.rightbar {
+  flex:0.5;
+  min-width: 200px;
+  margin: 10px 8px;
+  border-radius: 10px;
+  background: linear-gradient(94deg, #809fb0 50%, #f1a438 100%);
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  overflow-y: auto;
+}
+
+.rightbarWrapper { padding: 20px; }
+.rightbarTitle { font-size: 20px; font-weight: 600; margin-bottom: 10px; color:#4b3f2f; }
+.rightbarText { font-size: 15px; color:#555; margin-bottom: 15px; }
+.rightbarMatchButton { display:inline-block; background:#2C3E40; color:#fff; padding:8px 18px; border-radius:20px; text-decoration:none; font-weight:500; margin-bottom:20px; transition: background .2s; }
+.rightbarMatchButton:hover { background:#F1A438; }
+
+.rightbarFriendList { list-style:none; margin:0; padding:0; }
+.rightbarFriend { display:flex; align-items:center; margin-bottom:15px; }
+.rightbarProfileImgContainer { position:relative; margin-right:10px; }
+.rightbarFriendImg { width:40px; height:40px; border-radius:50%; object-fit:cover; }
+.rightbarOnline { position:absolute; width:12px; height:12px; background:#4CAF50; border-radius:50%; bottom:0; right:0; border:2px solid #fff; }
+.rightbarUserName { font-weight:500; }

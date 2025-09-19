@@ -1,0 +1,9 @@
+.homeContainer
+  {
+    display: flex;
+    flex-direction: row;
+    padding: 16px;
+    gap: 16px;
+    width: 100%;
+    height: calc(100% - 64px); /* Höhe abzüglich der Topbar */
+  }

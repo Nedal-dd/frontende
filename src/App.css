@@ -1,0 +1,81 @@
+/* ===== Base ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+html, body, #root { width: 100%; height: 100%; }
+
+/* ===== Mobile Layout ===== */
+@media (max-width: 768px) {
+  .homeContainer {
+    display: flex;
+    flex-direction: column !important;
+    padding: 16px 0 0 !important;
+    width: 100%;
+  }
+
+  /* Burger auf Mobile sichtbar + klickbar (z-index über Searchbar) */
+  .hamburgerMenu {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    position: relative; z-index: 10010;
+    background: transparent; border: 0; font-size: 24px;
+  }
+
+  /* Normale Sidebar/Rightbar im Flow verstecken – wir zeigen sie im Overlay */
+  .sidebar, .rightbar { display: none; }
+
+  /* Im Overlay wieder einblenden */
+  .sidebarMenuPanel .sidebar,
+  .sidebarMenuPanel .rightbar {
+    display: block !important;
+  }
+}
+
+/* ===== Overlay ===== */
+.sidebarMenuOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);  /* Backdrop */
+  z-index: 99999;                        /* über allem */
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  /* Kein onClick hier in CSS – Offen/Zu steuerst du in Home.jsx */
+}
+ 
+/* ===== Panel (links hereinschiebend) ===== */ 
+
+
+
+.sidebarMenuPanel {
+  position: relative;
+  background: #fff;                      /* wichtig, sonst „durchsichtig“ */
+  width: 90vw;                           /* Panelbreite */
+  max-width: 700px;
+  min-height: 100vh;
+  padding: 0;                            /* Inhalt steuert Abstände */
+  box-shadow: 2px 0 12px rgba(0,0,0,0.2);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+
+  display: flex;                         /* Sidebar & Rightbar nebeneinander */
+  flex-direction: row;
+  overflow: hidden;
+}
+
+/* Spalten im Panel: 50/50 + eigene Scrollbars */
+.sidebarMenuPanel .sidebar,
+.sidebarMenuPanel .rightbar {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100vh;
+  overflow: auto;
+  border-right: 1px solid #eee;
+}
+.sidebarMenuPanel .rightbar { border-right: none; }
+
+/* ===== Optional: Scrollbar Style ===== */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #a2a6ad; border-radius: 10px; }
+::-webkit-scrollbar-track { background: #c9ccd4; }

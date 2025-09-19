@@ -1,0 +1,87 @@
+:root {
+    --border-color: #333;
+    --btn-border: #444;
+    --btn-bg: #1f1f1f;
+    --btn-success: #2e7d32;
+    --text: #fff;
+    --text-dim: rgba(255,255,255,0.75);
+    --card-bg: transparent; /* ggf. #0f0f0f, wenn du eine Fläche willst */
+}
+
+.profileContainer {
+    padding: 16px;
+    width: 100%;
+}
+
+.loading { color: var(--text-dim); }
+
+.error { color: salmon; }
+
+.profileCard {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    max-width: 820px;
+    background: var(--card-bg);
+}
+
+.profileHeader {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.profileAvatar {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.profileHeadText { flex: 1; }
+
+.profileTitle {
+    margin: 0;
+    color: var(--text);
+}
+
+.profileLocation {
+    color: var(--text-dim);
+}
+
+.profileDivider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 16px 0;
+}
+
+.profileDetails {
+    display: grid;
+    gap: 12px;
+    color: var(--text);
+}
+
+/* Buttons */
+.profileButton {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--btn-border);
+    color: var(--text);
+    background: var(--btn-bg);
+    cursor: pointer;
+    transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.profileButton--primary { background: var(--btn-bg); }
+.profileButton--success { background: var(--btn-success); }
+
+.profileButton:disabled {
+    cursor: default;
+    opacity: 1; /* klarer Look trotz disabled */
+}
+
+.profileButton:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}

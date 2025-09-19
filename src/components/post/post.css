@@ -1,0 +1,293 @@
+/* Allgemeines Post-Layout */
+.post {
+  width: 100%;
+  border-radius: 8px;
+  margin: 33px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* ➜ performanter als harter Schatten */
+  background: white;
+}
+
+.postWrapper {
+  padding: 12px;
+}
+
+/* Top-Bereich */
+.postTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.postTopLeft {
+  display: flex;
+  align-items: center;
+}
+
+.postTopRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.postProfileImg {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+/* Username und Datum */
+.postUsername {
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0 8px;
+}
+
+.postDate {
+  font-size: 13px;
+  color: #615858;
+}
+
+/* Mitte (Text, Bild, Caption) */
+.postCenter {
+  margin: 20px 0;
+}
+
+.postCaption {
+  font-size: 17px;
+  font-weight: 600;
+  color: #6a3fb3;
+  margin-bottom: 2px;
+  background: #f3eaff;
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: inline-block;
+}
+
+.postCaptionLabel {
+  font-weight: 700;
+  color: #a084e8;
+  margin-right: 6px;
+}
+
+.postText {
+  font-size: 16px;
+  margin: 2px 0 8px 0;
+  color: #222;
+}
+
+.postImg {
+  width: 100%;
+  display: block;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+/* Feelings & Location */
+.postFeeling {
+  background: #fcd7a4;
+  font-weight: 600;
+  font-size: 14px;
+  margin-right: 133px;
+  border-radius: 12px;
+  padding: 3px 14px;
+  box-shadow: 0 1px 4px rgba(70, 8, 227, 0.13);
+  vertical-align: middle;
+}
+
+.postLocation {
+  background: #bdd9e8; 
+  color: #2c3e40;
+  font-weight: 500;
+  font-size: 14px;
+  margin-right: 133px;
+  border-radius: 12px;
+  padding: 4px 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Bottom Bereich */
+.postBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.postBottomLeft {
+  display: flex;
+  align-items: center;
+}
+
+.postLikesCounter,
+.postCommentsCounter {
+  font-size: 14px;
+  color: #796e6e;
+}
+
+/* Kommentare */
+.commentInputSection {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.commentInput {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 16px;
+  border: 1px solid #ccc;
+}
+
+.commentButton {
+  padding: 6px 16px;
+  border-radius: 16px;
+  border: none;
+  background: #2c3e40;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.commentButton:hover {
+  background-color: #f1a438;
+}
+
+.commentsBox {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.commentsList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.commentItem {
+  background: #f0f2f5;
+  border-radius: 12px;
+  padding: 6px 12px;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.commentItemFlex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.commentProfileImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Buttons */
+.editCommentButton,
+.deleteCommentButton {
+  background: none;
+  border: none;
+  font-size: 13px;
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.editCommentButton {
+  color: #2c3e40;
+}
+
+.editCommentButton:hover {
+  background: #eaf6ff;
+}
+
+.deleteCommentButton {
+  color: #d62e10;
+}
+
+.deleteCommentButton:hover {
+  background: #ffeaea;
+}
+
+.editCommentInput {
+  flex: 1;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 15px;
+  margin-left: 4px;
+}
+
+/* Optionen (Edit/Delete oben rechts) */
+.postOptionsMenu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.postOptionBtn {
+  background: #fff;
+  border: 1px solid #bbb;
+  color: #2c3e40;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 2px 10px;
+  cursor: pointer;
+  transition: background 0.15s, border 0.15s;
+}
+
+.postOptionBtn:hover {
+  background: #eaf6ff;
+  border: 1px solid #2c3e40;
+}
+
+/* Edit-Post */
+.editPostForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.editPostButtonGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.editPostInput {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.editPostButton {
+  background: #2c3e40;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}  
+
+.editPostButton:hover {
+  background: #f1a438;
+}
+
+/* Like-Animation */
+.liked {
+  filter: drop-shadow(0 0 6px #f1a438);
+}

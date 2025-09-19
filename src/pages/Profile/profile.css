@@ -1,0 +1,65 @@
+.profileContainer { width: 100%; max-width: 900px; margin: 12px auto; padding: 0 12px; }
+.profileForm, .profileCard { background:whitesmoke; border:2px solid steelblue; border-radius:12px; padding:12px; }
+.profileForm { display:flex; flex-direction:column; gap:12px; margin-bottom:12px; }
+.profileForm label { display:flex; flex-direction:column; gap:6px; }
+.profileForm input, .profileForm textarea { border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px; }
+.profileForm fieldset { border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px; display:flex; gap:12px; flex-wrap:wrap; }
+.profileForm legend { padding: 0 4px; color:#374151; }
+.btn { align-self:flex-start; background:#111827; color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.profilePhotoSection {
+  margin-bottom: 16px;
+}
+
+.profilePhotoLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.profilePhotoActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profilePhotoButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background:#374151;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+.profilePhotoButton:hover {
+  background: #e08d1a;
+}
+
+.profilePhotoHint {
+  color: #888;
+  font-size: 13px;
+}
+
+.profilePhotoUrlInput {
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.profilePhotoPreview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+  border: 2px solid #f1a438;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}

@@ -1,0 +1,217 @@
+.topbarContainer {
+  height: 50px;
+  width: 100%;
+  background-color:#809FB0;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 999; /* Sicherstellen, dass die Topbar immer oben bleibt */
+}
+ 
+.topbarLeft {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.topbarCenter {
+  flex: 2;
+  display: flex; 
+  justify-content: center; /* Zentriert horizontal */
+  align-items: center;     /* Zentriert vertikal */
+}
+
+.topbarRight {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: white;
+}
+
+.topbarLink {
+  margin-right: 10px;
+  font-size: 19px;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  white-space: nowrap; 
+}
+.topbarLink:hover {
+  color: #2C3E40;
+  background-color: transparent;
+}
+
+.topbarIcons {
+  display: flex;
+}
+
+.topbarIconItem {
+  margin-right: 20px;
+  position: relative;
+  cursor: pointer;
+}
+
+.topbarIconBadge { 
+  
+  width: 17px;
+  height: 17px;
+  background-color: #2C3E40;
+  border-radius: 50%; 
+  color: white;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+ 
+}
+
+
+  
+
+.searchBar {
+  width: 100%;
+  max-width: 500px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+
+.searchInput {
+  border: none;
+  width: 100%;
+  margin-left: 10px;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.searchIcon {
+  font-size: 20px;
+}
+
+.topbarImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 20px;
+  color: white;
+  cursor: pointer;
+}  
+
+
+
+.topbarDropdown {
+  position: absolute;
+  top: 60px;
+  right: 70px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 12px;
+  width: 220px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  color: #2C3E40;
+}
+
+.matchPopupContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.matchRequestItem {
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.matchProfileImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.matchInfo {
+  flex: 1;
+}
+
+.matchName {
+  font-weight: 600;
+  display: block;
+}
+
+.matchMessage {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.matchActions button {
+  margin-left: 5px;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.acceptBtn {
+  background-color: #2C3E40;
+  color: white;
+}
+
+.declineBtn {
+  background-color:#F1A438;;
+  color: white;
+}
+
+
+.hamburgerMenu {
+  display: none; /* Standardmäßig versteckt */
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  margin-left: 5px;
+  padding: 10px;
+  border-radius: 50%;
+
+}
+
+.searchBar { position: relative; }
+.searchDropdown {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: var(--bg, #b7d8ea); border: 1px solid #333; border-radius: 8px;
+  margin-top: 6px; max-height: 320px; overflow: auto; z-index: 50;
+}
+.searchItem { display: flex; gap: 10px; padding: 10px; text-decoration: none; }
+.searchItem:hover { background: #2a2a2a; }
+.searchAvatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+.searchName { font-weight: 600; }
+.searchUsername, .muted { opacity: 0.7; font-size: 12px; }
+
+.searchSeeAll {
+  width: 100%; padding: 10px; border: none; background: transparent;
+  cursor: pointer; text-align: left; opacity: .8;
+}
+.searchSeeAll:hover { background:#2a2a2a; opacity: 1; }

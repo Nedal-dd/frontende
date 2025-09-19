@@ -1,0 +1,28 @@
+.sidebar {
+  flex: 0.5;
+  min-width: 200px;        
+  margin: 10px 8px;
+  border-radius: 10px;
+  background: linear-gradient(275deg, #809fb0 29%, #f1a438 100%);
+  box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  overflow-y: auto;
+}
+
+.sidebarWrapper { padding: 16px; }
+
+.sidebarList { list-style: none; padding: 0; }
+.sidebarListItem { display: flex; align-items: center; margin: 30px 0; color: #4b3f2f; }
+.sidebarListItem.active { background: #eaf6ff; color: #34669e; border-radius: 10px; font-weight: 600; width: 33%; }
+.sidebarIcon { margin-right: 17px; }
+
+.sidebarButton { width: 100%; border-radius: 20px; border: none; background:#2C3E40; color:#fff; padding:10px; font-weight: 555; }
+.sidebarButton:hover { background:#F1A438; }
+
+.sidebarHr { margin:20px 0; }
+.sidebarFriendList { list-style:none; padding:0; }
+.sidebarFriend { display:flex; align-items:center; margin-bottom:17px; }
+.sidebarFriendImg { width:40px; height:40px; border-radius:50%; margin-right:10px; object-fit:cover; }
+
+.sidebarLink { text-decoration:none; color:#4b3f2f; font-weight:500; }
+.sidebarLink:hover { color:#34669e; background:#eaf6ff; border-radius:10px; }
+

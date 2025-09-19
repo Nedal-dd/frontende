@@ -1,0 +1,37 @@
+.friendRequestPopup {
+  position: absolute;
+  top: 80px;
+  left: 50px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 200px;
+} 
+
+.popupActions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+
+.sendBtn {
+  background-color:#2C3E40;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background-color: #F1A438;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
