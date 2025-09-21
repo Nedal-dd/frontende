@@ -1,87 +1,135 @@
-:root {
-    --border-color: #333;
-    --btn-border: #444;
-    --btn-bg: #1f1f1f;
-    --btn-success: #2e7d32;
-    --text: #fff;
-    --text-dim: rgba(255,255,255,0.75);
-    --card-bg: transparent; /* ggf. #0f0f0f, wenn du eine Fläche willst */
+
+
+/* Card */
+.profileCard{
+    width:100%;
+    max-width:920px;
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
 }
 
-.profileContainer {
-    padding: 16px;
-    width: 100%;
+/* Header */
+.profileHeader{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:22px 22px 10px;
 }
 
-.loading { color: var(--text-dim); }
-
-.error { color: salmon; }
-
-.profileCard {
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 16px;
-    max-width: 820px;
-    background: var(--card-bg);
+.profileAvatar{
+    width:96px;
+    height:96px;
+    border-radius:999px;
+    object-fit:cover;
+    border:2px solid var(--border);
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    background:#0a0a0a;
 }
 
-.profileHeader {
-    display: flex;
-    gap: 16px;
-    align-items: center;
+.profileHeadText{
+    flex:1;
+    min-width:0;
 }
 
-.profileAvatar {
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
+.profileTitle{
+    font-size:1.5rem;
+    font-weight:700;
+    letter-spacing:.2px;
+    margin:0 0 4px;
 }
 
-.profileHeadText { flex: 1; }
-
-.profileTitle {
-    margin: 0;
-    color: var(--text);
+.profileLocation{
+    font-size:.95rem;
+    color:var(--muted);
 }
 
-.profileLocation {
-    color: var(--text-dim);
+/* Friend state / actions */
+.profileFriendChip{
+    padding:6px 12px;
+    background:color-mix(in oklab, var(--success) 18%, transparent);
+    border:1px solid color-mix(in oklab, var(--success) 60%, var(--border));
+    color:var(--text);
+    border-radius:999px;
+    font-weight:600;
 }
 
-.profileDivider {
-    border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 16px 0;
+.profileButton{
+    appearance:none;
+    border:none;
+    border-radius:12px;
+    padding:10px 14px;
+    font-weight:600;
+    letter-spacing:.2px;
+    cursor:pointer;
+    transition:transform .08s ease, box-shadow .15s ease, background .15s ease, opacity .15s;
+    box-shadow:0 4px 16px rgba(0,0,0,.18);
 }
 
-.profileDetails {
-    display: grid;
-    gap: 12px;
-    color: var(--text);
+.profileButton--primary{
+    background:var(--primary);
+    color:white;
+}
+.profileButton--primary:hover{ background:var(--primary-600); transform:translateY(-1px); }
+.profileButton--success{
+    background:var(--success);
+    color:#09110f;
+}
+.profileButton:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
+
+/* Divider */
+.profileDivider{
+    height:1px;
+    border:0;
+    margin:14px 0 6px;
+    background:linear-gradient(90deg,transparent, var(--border), transparent);
 }
 
-/* Buttons */
-.profileButton {
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--btn-border);
-    color: var(--text);
-    background: var(--btn-bg);
-    cursor: pointer;
-    transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+/* Details */
+.profileDetails{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:12px 24px;
+    padding:14px 22px 22px;
+    line-height:1.5;
 }
 
-.profileButton--primary { background: var(--btn-bg); }
-.profileButton--success { background: var(--btn-success); }
-
-.profileButton:disabled {
-    cursor: default;
-    opacity: 1; /* klarer Look trotz disabled */
+.profileDetails p{
+    margin:0;
+    color:var(--text);
+}
+.profileDetails b{
+    color:var(--muted);
+    font-weight:600;
+    margin-right:6px;
 }
 
-.profileButton:not(:disabled):hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+/* Loading & Error */
+.loading, .error{
+    width:100%;
+    max-width:920px;
+    margin:24px auto;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    text-align:center;
+}
+.error{ border-color:color-mix(in oklab, var(--danger) 55%, var(--border)); }
+
+/* Responsive */
+@media (max-width: 860px){
+    .profileHeader{ flex-wrap:wrap; gap:14px; }
+    .profileAvatar{ width:80px; height:80px; }
+    .profileDetails{ grid-template-columns:1fr; }
+}
+@media (max-width: 520px){
+    .profileContainer{ padding:18px 12px; }
+    .profileCard{ border-radius:14px; }
+    .profileHeader{ padding:18px 16px 8px; }
+    .profileDetails{ padding:12px 16px 18px; }
 }

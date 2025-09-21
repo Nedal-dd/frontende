@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import Topbar from "../../components/topbar/Topbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import { UsersApi, ProfileApi, FriendshipsApi, AuthApi } from "../../api/api";
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
+import "./userPublicProfile.css";
+
 
 // Helpers
 const fromPetEnum = (e) =>
@@ -19,7 +22,9 @@ const normalizeStatus = (s) => {
     return "NONE";
 };
 
+
 export default function UserPublicProfile() {
+
     const { id } = useParams();
 
     const [me, setMe] = useState(null);
@@ -108,6 +113,12 @@ export default function UserPublicProfile() {
         }
     };
 
+    // Avatar-URL (Profil oder Default)
+    const avatarUrl =
+        profile && profile.urlProfilePicture
+            ? resolveAvatarSrc(profile.urlProfilePicture)
+            : DEFAULT_AVATAR_URL;
+
     return (
         <>
             <Topbar
@@ -129,9 +140,10 @@ export default function UserPublicProfile() {
                         <div className="profileCard">
                             <div className="profileHeader">
                                 <img
-                                    className="profileAvatar"
-                                    src={user.profilePictureUrl || "/assets/default-avatar.png"}
+                                    className="profileAvatar "
+                                    src={avatarUrl || "/assets/default-avatar.png"}
                                     alt={user.username}
+                                    onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
                                 />
 
                                 <div className="profileHeadText">
@@ -168,7 +180,6 @@ export default function UserPublicProfile() {
                                 <p><b>Looking for:</b> {fromLookingEnum(profile?.lookingFor)}</p>
                                 <p><b>Topics:</b> {profile?.topics || "—"}</p>
                                 <p><b>Preferred days:</b> {profile?.days || "—"}</p>
-                                <p><b>Messages allowed:</b> {profile?.allowMessages ? "Yes" : "No"}</p>
                             </div>
                         </div>
                     )}

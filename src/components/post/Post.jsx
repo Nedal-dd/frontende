@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import "./post.css";
 import { FavoriteBorder, Comment } from "@mui/icons-material";
 import { PostsApi ,ProfileApi } from "../../api/api";
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 import { useAuth } from "../../AuthContext";
 
 function Post({ post, onDelete, onEdit }) {
@@ -10,7 +11,7 @@ function Post({ post, onDelete, onEdit }) {
 
   const [likeCount, setLikeCount] = useState(post.likeCount ?? 0);
   const [isLiked, setIsLiked] = useState(false); // set from backend if you add likedByMe
-    const [authorAvatar, setAuthorAvatar] = useState("/assets/person/noAvatar.png");
+    const [authorAvatar, setAuthorAvatar] = useState(DEFAULT_AVATAR_URL);
 
 
 
@@ -34,25 +35,6 @@ function Post({ post, onDelete, onEdit }) {
     setLikeCount(post.likeCount ?? 0);
   }, [post]); // ✅ sync when parent gives a new/updated post
 
-
-    const DEFAULT_AVATAR = "/assets/person/noAvatar.png";
-    const normalizeAvatar = (u) => (u && u.trim() ? u : DEFAULT_AVATAR);
-
-
-
-    useEffect(() => {
-        let cancelled = false;
-        (async () => {
-            try {
-                if (!post.authorId) return;
-                const { data } = await ProfileApi.getByUserId(post.authorId);
-                if (!cancelled) setAuthorAvatar(normalizeAvatar(data?.urlProfilePicture));
-            } catch {
-                if (!cancelled) setAuthorAvatar(DEFAULT_AVATAR);
-            }
-        })();
-        return () => { cancelled = true; };
-    }, [post.authorId]);
 
 
     // ----- comments -----
@@ -84,7 +66,24 @@ function Post({ post, onDelete, onEdit }) {
     };
   }, [showComments, post.id]);
 
-  const toggleLike = async () => {
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                if (!post.authorId) return;
+                const { data } = await ProfileApi.getByUserId(post.authorId);
+                if (!cancelled) {
+                    setAuthorAvatar(resolveAvatarSrc(data?.urlProfilePicture));
+                }
+            } catch {
+                if (!cancelled) setAuthorAvatar(DEFAULT_AVATAR_URL);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [post.authorId]);
+
+
+    const toggleLike = async () => {
     try {
       if (isLiked) {
         setIsLiked(false);
@@ -179,9 +178,10 @@ function Post({ post, onDelete, onEdit }) {
             className="commentItem commentItemFlex"
           >
             <img
-              src={"/assets/person/noAvatar.png"}
+                className="commentProfileImg"
+                src={authorAvatar}
               alt=""
-              className="commentProfileImg"
+                onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
             />
             <span style={{ fontWeight: 500, marginRight: 6 }}>
               {c.authorUsername}
@@ -234,7 +234,7 @@ function Post({ post, onDelete, onEdit }) {
         {/* Header */}
         <div className="postTop">
           <div className="postTopLeft">
-            <img className="postProfileImg" src={authorAvatar} alt="" onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR)} />
+            <img className="postProfileImg" src={authorAvatar} alt=""  />
             <span className="postUsername">{authorName}</span>
             <span className="postDate">{createdAt}</span>
           </div>

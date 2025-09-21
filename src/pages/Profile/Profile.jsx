@@ -4,6 +4,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import { ProfileApi, AuthApi } from "../../api/api";
 import { AddPhotoAlternate } from "@mui/icons-material";
 import "./profile.css";
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 
 /** Local enum mappers (UI <-> backend enums) */
 const toPetEnum = (v) =>
@@ -51,8 +52,16 @@ export default function Profile() {
     () => (photoFile ? URL.createObjectURL(photoFile) : null),
     [photoFile]
   );
+    useEffect(() => {
+        return () => {
+            if (photoPreview) URL.revokeObjectURL(photoPreview);
+        };
+    }, [photoPreview]);
 
-  useEffect(() => {
+
+    useEffect(() => {
+
+        console.log("into useEffect");
     (async () => {
       setLoading(true);
       try {
@@ -60,6 +69,7 @@ export default function Profile() {
         var x = user.username.split("@")[0];
         console.log("Username:::::", x);
         const { data: profile } = await ProfileApi.getMe();
+        console.log("Profile data:", profile.urlProfilePicture);
         setForm((f) => ({
           ...f,
           username: x,
@@ -70,8 +80,9 @@ export default function Profile() {
           topics: profile?.topics ?? "",
           days: profile?.days ?? "",
           allowMessagesUi: profile?.allowMessages ? "yes" : "no",
-            urlProfilePicture: profile?.urlProfilePicture?.trim() ? profile.urlProfilePicture : "",
+            urlProfilePicture: profile?.urlProfilePicture ?? "",
         }));
+        console.log("Form data:", form);
       } catch (err) {
         console.error("Failed to load profile:", err);
       } finally {
@@ -89,6 +100,7 @@ export default function Profile() {
   const handlePhotoChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setPhotoFile(e.target.files[0]);
+      console.log("Selected photo file:", e.target.files[0]);
       setShowPhotoInput(false);
     }
   };
@@ -108,20 +120,23 @@ export default function Profile() {
     e.preventDefault();
     setLoading(true);
 
-    let urlProfilePicture = form.urlProfilePicture;
-    if (photoFile) {
-      urlProfilePicture = await uploadPhotoAndGetUrl(photoFile);
-    }
-      const cleanUrl = (urlProfilePicture || "").trim()
-    const dto = {
+      let urlProfilePicture = (form.urlProfilePicture || "").trim();
+      console.log("Uploading picture:", urlProfilePicture);
+      if (photoFile) {
+          urlProfilePicture = photoFile.name;        // z.B. "1.png"
+      }
+      if (urlProfilePicture === "") urlProfilePicture = null;
+
+
+      const dto = {
       bio: form.bio,
       location: form.location,
       petType: toPetEnum(form.petTypeUi),
       lookingFor: toLookingEnum(form.lookingForUi),
       topics: form.topics,
       days: form.days,
-        urlProfilePicture: cleanUrl !== "" ? cleanUrl : null, // 👈 "" wird zu null
-      allowMessages: form.allowMessagesUi === "yes",
+        urlProfilePicture,
+
     };
     try {
       await ProfileApi.updateMe(dto);
@@ -155,7 +170,7 @@ export default function Profile() {
               Location
               <input
                 name="location"
-                value={form.location}
+                value={form.location }
                 onChange={onChange}
               />
             </label>
@@ -190,16 +205,16 @@ export default function Profile() {
               />
               <input
                 name="urlProfilePicture"
-                placeholder="https://example.com/myphoto.jpg"
                 value={form.urlProfilePicture}
                 onChange={onChange}
                 className="profilePhotoUrlInput"
               />
               {(photoPreview || form.urlProfilePicture) && (
                 <img
-                  src={photoPreview || form.urlProfilePicture}
+                    src={photoPreview || resolveAvatarSrc(form.urlProfilePicture)}
                   alt="Profile Preview"
                   className="profilePhotoPreview"
+                    onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
                 />
               )}
             </div>
@@ -256,29 +271,7 @@ export default function Profile() {
               />
             </label>
 
-            <fieldset>
-              <legend>Allow messages</legend>
-              <label>
-                <input
-                  type="radio"
-                  name="allowMessagesUi"
-                  value="yes"
-                  checked={form.allowMessagesUi === "yes"}
-                  onChange={onChange}
-                />
-                Yes
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="allowMessagesUi"
-                  value="no"
-                  checked={form.allowMessagesUi === "no"}
-                  onChange={onChange}
-                />
-                No
-              </label>
-            </fieldset>
+
 
             <button type="submit" className="btn" disabled={loading}>
               {loading ? "Loading…" : "Save"}
@@ -289,10 +282,11 @@ export default function Profile() {
             <h2>Preview</h2>
             {(photoPreview || form.urlProfilePicture) && (
               <img
+
                 src={photoPreview || form.urlProfilePicture}
+
                 alt="Profile"
                 className="profilePhotoPreview"
-                onError={(e) => (e.currentTarget.src = "/assets/default-avatar.png")}
                 style={{ marginBottom: 10 }}
               />
             )}
@@ -300,7 +294,7 @@ export default function Profile() {
               <b>About:</b> {form.bio || "—"}
             </p>
             <p>
-              <b>Location:</b> {form.location || "—"}
+              <b>Location:</b> jetzt {form.location || "—"}
             </p>
             <p>
               <b>Pet type:</b> {form.petTypeUi}

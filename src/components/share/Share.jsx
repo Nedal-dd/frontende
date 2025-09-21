@@ -8,6 +8,7 @@ import {
 } from "@mui/icons-material";
 import "./share.css";
 import {  ProfileApi } from "../../api/api";
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 
 export default function Share({ addPost }) {
   const [input, setInput] = useState("");
@@ -21,18 +22,16 @@ export default function Share({ addPost }) {
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [showCaptionInput, setShowCaptionInput] = useState(false);
   const [photoInputKey, setPhotoInputKey] = useState(Date.now());
-  const [profilePicUrl, setProfilePicUrl] = useState("");
+    const [profilePicUrl, setProfilePicUrl] = useState(DEFAULT_AVATAR_URL);
     const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         const { data } = await ProfileApi.getMe();
-        setProfilePicUrl(
-            data.urlProfilePicture?.trim() ? data.urlProfilePicture : "/assets/default-avatar.png"
-        );
+          setProfilePicUrl(resolveAvatarSrc(data.urlProfilePicture));
       } catch {
-        setProfilePicUrl("/assets/default-avatar.png");
+          setProfilePicUrl(DEFAULT_AVATAR_URL);
       }
     })();
   }, []);
@@ -119,7 +118,6 @@ export default function Share({ addPost }) {
       <div className="shareWrapper">
         <div className="shareTop">
           <img className="shareProfileImg" src={profilePicUrl} alt="Profile"
-               onError={(e) => (e.currentTarget.src = "/assets/default-avatar.png")}
           />
           <input
             placeholder="What's on your mind?"
@@ -135,8 +133,9 @@ export default function Share({ addPost }) {
             {photoPreview && (
               <img
                 className="sharePreviewImg"
-                src={photoPreview}
+                src={profilePicUrl}
                 alt="preview"
+                onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
               />
             )}
             <div className="sharePreviewMeta">
@@ -176,7 +175,8 @@ export default function Share({ addPost }) {
               <Subtitles htmlColor="mediumPurple" className="shareIcon" />
               <span className="shareOptionText">Caption</span>
             </div>
-            <button className="shareButton" type="submit">
+              <button className="shareButton" type="submit" disabled={busy || !input.trim()}>
+                  {busy ? "Sharing..." : "Share"}
               Share
             </button>
           </div>

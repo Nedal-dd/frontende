@@ -4,6 +4,7 @@ import { Search, Person, Beenhere, Chat, Notifications } from "@mui/icons-materi
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { UsersApi, ProfileApi, NotificationsApi, FriendshipsApi } from "../../api/api";
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 
 export default function Topbar({
                                    onHamburgerClick,
@@ -33,13 +34,14 @@ export default function Topbar({
 
     const actorCacheRef = useRef(new Map());
     const pollRef = useRef(null);
+    const searchAvatarCacheRef = useRef(new Map());
 
     // === Profilbild laden ===
     useEffect(() => {
         (async () => {
             try {
                 const { data } = await ProfileApi.getMe();
-                setProfilePicUrl(data?.urlProfilePicture || "/assets/default-avatar.png");
+                setProfilePicUrl(resolveAvatarSrc(data.urlProfilePicture));
             } catch {
                 setProfilePicUrl("/assets/default-avatar.png");
             }
@@ -71,7 +73,6 @@ export default function Topbar({
         setSearchOpen(false);
     };
 
-    // === Debounced Suche (300ms) ===
     useEffect(() => {
         if (!query?.trim()) {
             setResults([]);
@@ -81,7 +82,33 @@ export default function Topbar({
         const t = setTimeout(async () => {
             try {
                 const { data } = await UsersApi.search(query.trim());
-                setResults(data || []);
+                const raw = data || [];
+
+                const enriched = await Promise.all(
+                    raw.map(async (u) => {
+                        // 1) Wenn UsersApi.search bereits eine URL hat, nutzen
+                        let src = u.profilePictureUrl;
+
+                        // 2) Sonst aus Cache oder Profile laden
+                        if (!src) {
+                            const cached = searchAvatarCacheRef.current.get(u.id);
+                            if (cached) return { ...u, avatar: cached };
+                            try {
+                                const { data: prof } = await ProfileApi.getByUserId(u.id);
+                                src = prof?.urlProfilePicture || "";
+                            } catch {
+                                src = "";
+                            }
+                        }
+
+                        // 3) Dateiname/URL → echte URL mit Prefix
+                        const final = resolveAvatarSrc(src);
+                        searchAvatarCacheRef.current.set(u.id, final);
+                        return { ...u, avatar: final };
+                    })
+                );
+
+                setResults(enriched);
                 setSearchOpen(true);
             } catch {
                 setResults([]);
@@ -91,6 +118,7 @@ export default function Topbar({
         }, 300);
         return () => clearTimeout(t);
     }, [query]);
+
 
     // === Enter/Escape in Suche ===
     const handleSearchKeyDown = (e) => {
@@ -138,7 +166,7 @@ export default function Topbar({
         const fetchNotifs = async () => {
             try {
                 const { data } = await NotificationsApi.list(); // nur für eingeloggten User
-                    console.log("Notifications:", data);
+                 //   console.log("Notifications:", data);
                 // 1) Eingehende Friend-Requests (zum Annehmen/Ablehnen)
                 const incoming = (data || []).filter(
                     (n) =>
@@ -148,7 +176,7 @@ export default function Topbar({
                         // heuristik: es ist KEIN „accepted/declined“-Update
                         !/accepted|declined/i.test(`${n.title || ""} ${n.message || ""}`)
                 );
-                console.log("Incoming:", incoming);
+              //  console.log("Incoming:", incoming);
                 const enrichedIncoming = await enrichWithActor(incoming);
 
                 // 2) Updates zu von MIR gesendeten Requests (accepted/declined)
@@ -158,7 +186,7 @@ export default function Topbar({
                         !n.read &&
                         /accepted|declined/i.test(`${n.title || ""} ${n.message || ""}`) //
                 );
-                console.log("Updates:", updates);
+             //   console.log("Updates:", updates);
                 const enrichedUpdates = await enrichWithActor(updates);
 
                 if (!cancelled) {
@@ -244,9 +272,10 @@ export default function Topbar({
                                         onClick={() => setSearchOpen(false)}
                                     >
                                         <img
-                                            src={u.profilePictureUrl || "/assets/default-avatar.png"}
+                                            src={u.avatar || DEFAULT_AVATAR_URL}
                                             alt={u.username}
                                             className="searchAvatar"
+                                            onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
                                         />
                                         <div className="searchText">
                                             <div className="searchUsername">@{u.username}</div>
