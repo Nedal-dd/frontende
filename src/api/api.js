@@ -44,6 +44,12 @@ export const AuthApi = {
             headers: { "Content-Type": "text/plain;charset=UTF-8" },
         }),
     logout: () => api.post("/auth/logout"),
+    forgotPasswordStart: (email) =>
+        api.post("/auth/forgot-password", email, {
+            headers: { "Content-Type": "text/plain;charset=UTF-8" },
+        }),
+    forgotPasswordVerify: ({ email, code, newPassword }) =>
+        api.post("/auth/forgot-password/verify", { email, code, newPassword }),
 };
 
 // === Users ===

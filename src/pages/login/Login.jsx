@@ -72,7 +72,7 @@ export default function Login() {
 
         <div className="register">
           <p>
-            <a href="#">Forget Password?</a>
+            <a href="/forgot-password">Forget Password?</a>
           </p>
         </div>
 

@@ -7,6 +7,7 @@ import SignupForm from "./pages/login/SignupForm";
 import Profile from "./pages/Profile/Profile";
 import UserPublicProfile from "./pages/UserPublicProfile/UserPublicProfile";
 import "./App.css";
+import ForgotPassword from "./pages/login/ForgotPassword";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/signup" element={<SignupForm />} />
       <Route path="/Profile" element={<Profile />} />
       <Route path="/users/:id" element={<UserPublicProfile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 }
