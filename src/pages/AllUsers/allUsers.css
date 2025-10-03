@@ -1,0 +1,55 @@
+.allUsers-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.allUsers-title {
+    margin-bottom: 12px;
+}
+
+.allUsers-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.allUsers-search {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.allUsers-refresh {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    cursor: pointer;
+}
+
+.allUsers-refresh:hover {
+    background: #e5e5e5;
+}
+
+.allUsers-error {
+    color: crimson;
+}
+
+.allUsers-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.allUsers-table th,
+.allUsers-table td {
+    padding: 8px 4px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.allUsers-table th {
+    border-bottom: 1px solid #e5e5e5;
+}

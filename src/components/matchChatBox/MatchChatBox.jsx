@@ -1,20 +1,20 @@
-
-// src/components/ChatPopup/ChatPopup.jsx  (SESSION/COOKIE AUTH ONLY)
 import { useEffect, useRef, useState } from "react";
-import "./chatPopup.css";
+import "./matchchatbox.css";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-import { ChatApi, UsersApi, PresenceApi } from "../../api/api";
+import { ChatApi } from "../../api/api";
 import { fmtTime } from "../../utils/datetime";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8080";
 const WS_BASE = `${API_BASE}/ws`;
 
-export default function ChatPopup({ currentUser, onClose }) {
-    const [friends, setFriends] = useState([]); // [{ id:number, username:string }]
-    const [onlineIdSet, setOnlineIdSet] = useState(new Set()); // Set<number>
-    const [onlineNameSet, setOnlineNameSet] = useState(new Set()); // Set<string lowercased>
-    const [selectedFriend, setSelectedFriend] = useState(null);
+export default function MatchChatBox({
+                                         currentUser,
+                                         matchedUsers = [],
+                                         onClose,
+                                     }) {
+
+    const [selectedInterestMatch, setSelectedInterestMatch] = useState(null);
     const [messages, setMessages] = useState([]); // ChatMessageDTO[]
     const [input, setInput] = useState("");
 
@@ -22,68 +22,25 @@ export default function ChatPopup({ currentUser, onClose }) {
     const subRef = useRef(null);
     const bottomRef = useRef(null);
 
-    // --------------------   Hilfsfunktionen --------------------------------------------------------
+    // ---------- helpers ----------
     const toNum = (v) => {
         const n = Number(v);
         return Number.isFinite(n) ? n : null;
     };
 
-    const normalizeFriends = (data) =>
+    const normalizeUsers = (data) =>
         (data || [])
-            .map((f) => ({
-                id: toNum(f?.id ?? f?.user?.id ?? f?.friendId),
+            .map((u) => ({
+                id: toNum(u?.id ?? u?.user?.id ?? u?.friendId),
                 username: String(
-                    f?.username ?? f?.user?.username ?? f?.friend?.username ?? ""
+                    u?.username ?? u?.user?.username ?? u?.friend?.username ?? ""
                 ).trim(),
             }))
             .filter((x) => x.id !== null && x.username);
 
-    const markIsOnline = (f) => {
-        // bevorzugt: id, sonst username
-        if (onlineIdSet.size > 0) return onlineIdSet.has(f.id);
-        if (onlineNameSet.size > 0)
-            return onlineNameSet.has(f.username.toLowerCase());
-        return false;
-    };
+    const interestMatches = normalizeUsers(matchedUsers);
 
-    // --------------------- fetch Freunde ----------------------------------
-    useEffect(() => {
-        if (!currentUser?.id) return;
-        (async () => {
-            try {
-                const { data } = await UsersApi.friends(currentUser.id);
-                setFriends(normalizeFriends(data));
-            } catch (e) {
-                console.error("Failed to fetch friends", e);
-            }
-        })();
-    }, [currentUser?.id]);
-
-    // ------------------- Poll online Fruende ------------------------------------------------
-    useEffect(() => {
-        let cancelled = false;
-
-        const loadOnline = async () => {
-            try {
-                const { data } = await PresenceApi.onlineFriends(); // UserDTO[]
-                if (!cancelled) {
-                    const idSet = new Set((data || []).map((u) => u.id));
-                    setOnlineIdSet(idSet);
-                }
-            } catch (e) {
-                console.error("Failed to fetch online friends", e);
-            }
-        };
-
-        loadOnline();
-        const t = setInterval(loadOnline, 10000);
-        return () => {
-            cancelled = true;
-            clearInterval(t);
-        };
-    }, []);
-
-    // ----------------------- WebSocket Verbindung für Chat --------------------------------------
+    // ---------- WebSocket ----------
     useEffect(() => {
         const sock = new SockJS(WS_BASE, null, {
             transportOptions: {
@@ -98,7 +55,7 @@ export default function ChatPopup({ currentUser, onClose }) {
             onConnect: () => {
                 subRef.current = client.subscribe("/user/queue/messages", (frame) => {
                     try {
-                        const dto = JSON.parse(frame.body); // ChatMessageDTO
+                        const dto = JSON.parse(frame.body);
                         setMessages((prev) => [...prev, dto]);
                     } catch (e) {
                         console.error("WS frame parse error:", e);
@@ -120,18 +77,21 @@ export default function ChatPopup({ currentUser, onClose }) {
         };
     }, []);
 
-    //  -------------  history laden, wenn Freund ausgewählt  ------------------------
+    // ---------- load history when a match is selected ----------
     useEffect(() => {
-        if (!selectedFriend?.id || !currentUser?.id) return;
+        if (!selectedInterestMatch?.id || !currentUser?.id) return;
         (async () => {
             try {
-                const res = await ChatApi.history(currentUser.id, selectedFriend.id);
+                const res = await ChatApi.history(
+                    currentUser.id,
+                    selectedInterestMatch.id
+                );
                 const list = Array.isArray(res.data) ? res.data : [];
                 setMessages((prev) => {
                     const isThisPair = (m) =>
                         (m.senderUsername === currentUser.username &&
-                            m.recipientUsername === selectedFriend.username) ||
-                        (m.senderUsername === selectedFriend.username &&
+                            m.recipientUsername === selectedInterestMatch.username) ||
+                        (m.senderUsername === selectedInterestMatch.username &&
                             m.recipientUsername === currentUser.username);
                     const others = prev.filter((m) => !isThisPair(m));
                     return [...others, ...list];
@@ -140,80 +100,72 @@ export default function ChatPopup({ currentUser, onClose }) {
                 console.error("Failed to load history:", err);
             }
         })();
-    }, [selectedFriend?.id, currentUser?.id]);
+    }, [selectedInterestMatch?.id, currentUser?.id]);
 
-    // -------------------- Auto-scrollen zu untersten Nachricht ------------------------
+    // ---------- auto-scroll ----------
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages, selectedFriend]);
+    }, [messages, selectedInterestMatch]);
 
-    // -------------------- Nachricht senden ----------------------------------
+    // ---------- send message ----------
     const handleSend = () => {
         const content = input.trim();
-        if (!content || !selectedFriend || !currentUser) return;
+        if (!content || !selectedInterestMatch || !currentUser) return;
         const client = stompRef.current;
         if (!client || !client.connected) return;
 
         client.publish({
             destination: "/app/chat",
-            body: JSON.stringify({ recipientId: selectedFriend.id, content }),
+            body: JSON.stringify({ recipientId: selectedInterestMatch.id, content }),
         });
 
         setInput("");
     };
 
     const goBack = () => {
-        setSelectedFriend(null);
+        setSelectedInterestMatch(null);
         setInput("");
     };
 
-    // -------------------- Nachrichten für die aktive Konversation ------------------------
-    const visible = selectedFriend
+    const visible = selectedInterestMatch
         ? messages.filter(
             (m) =>
                 (m.senderUsername === currentUser?.username &&
-                    m.recipientUsername === selectedFriend.username) ||
-                (m.senderUsername === selectedFriend.username &&
+                    m.recipientUsername === selectedInterestMatch.username) ||
+                (m.senderUsername === selectedInterestMatch.username &&
                     m.recipientUsername === currentUser?.username)
         )
         : [];
 
-    // ----------------------------- Render ---------------------------------
+    // ---------- render ----------
     return (
         <div className="chatPopup">
             <div className="chatHeader">
-                {selectedFriend && (
+                {selectedInterestMatch && (
                     <button className="chatBackBtn" onClick={goBack} title="Back" />
                 )}
                 <span>
-          {selectedFriend
-              ? `Chat with ${selectedFriend.username}`
-              : "Choose a friend"}
+          {selectedInterestMatch
+              ? `Chat with ${selectedInterestMatch.username}`
+              : "Choose a match"}
         </span>
                 <button className="chatCloseBtn" onClick={onClose}>
                     ×
                 </button>
             </div>
 
-            {!selectedFriend ? (
-                // Liste der Freunde
+            {!selectedInterestMatch ? (
                 <ul className="friendList">
-                    {friends.map((f) => {
-                        const isOnline = markIsOnline(f);
+                    {interestMatches.map((u) => {
                         return (
                             <li
-                                key={f.id}
+                                key={u.id}
                                 className="friendItem rightbarFriend"
-                                onClick={() => setSelectedFriend(f)}
+                                onClick={() => setSelectedInterestMatch(u)}
                                 style={{ cursor: "pointer" }}
                             >
                                 <div className="rightbarProfileImgContainer" />
-                                <span className="rightbarUsername">
-                  {f.username}{" "}
-                                    <em style={{ fontSize: 12, opacity: 0.8 }}>
-                    ({isOnline ? "online" : "offline"})
-                  </em>
-                </span>
+                                <span className="rightbarUsername">{u.username} </span>
                             </li>
                         );
                     })}
@@ -222,7 +174,7 @@ export default function ChatPopup({ currentUser, onClose }) {
                 <>
                     <div className="chatSubHeader">
                         <button className="chatBackLink" onClick={goBack}>
-                            ← Back to friends
+                            ← Back to matches
                         </button>
                     </div>
 
@@ -239,7 +191,7 @@ export default function ChatPopup({ currentUser, onClose }) {
                     <div className="chatInputWrapper">
                         <input
                             className="chatInput"
-                            placeholder={`Message ${selectedFriend.username}...`}
+                            placeholder={`Message ${selectedInterestMatch.username}...`}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => {
