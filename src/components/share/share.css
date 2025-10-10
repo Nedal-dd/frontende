@@ -111,3 +111,47 @@
 .shareFileInputHidden {
   display: none;
 }
+
+
+/* --- Preview-Box unter dem Input --- */
+.sharePreview{
+    margin: 8px 0 0;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f7f7f7;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+/* Bild in der Vorschau begrenzen */
+.sharePreviewImg{
+    display: block;
+    width: 100%;
+    max-width: 320px;   /* <<< breite Deckelung */
+    max-height: 240px;  /* <<< höhe Deckelung */
+    object-fit: cover;  /* hübscher Ausschnitt statt „alles“ */
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+/* Text rechts neben dem Bild */
+.sharePreviewMeta{
+    flex: 1;
+    min-width: 160px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Optional: auf ganz schmalen Screens Bild & Text untereinander */
+@media (max-width: 520px){
+    .sharePreview{
+        flex-direction: column;
+    }
+    .sharePreviewImg{
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        max-height: 280px;
+    }
+}

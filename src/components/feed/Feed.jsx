@@ -23,7 +23,7 @@ export default function Feed() {
             ? await PostsApi.listFriends(params)
             : await PostsApi.list(params);
 
-        // Spring Page has { content, totalElements, totalPages, ... }
+         // Spring Page has { content, totalElements, totalPages, ... }
         if (!cancelled) {
           const list = Array.isArray(data) ? data : data.content ?? [];
           setPosts(list);
@@ -72,7 +72,9 @@ export default function Feed() {
   const renderedPosts = useMemo(
     () =>
       posts.map((p) => (
+          console.log("p ist ",p),
         <Post key={p.id} post={p} onDelete={deletePost} onEdit={editPost} />
+
       )),
     [posts]
   );

@@ -93,9 +93,9 @@ export default function Share({ addPost }) {
     const dto = {
       content: input.trim(),
       imageUrl: null, // set real URL after you implement upload
-      Feeling: feeling.trim() ? feeling.trim() : null,
-      Location: location.trim() ? location.trim() : null,
-      Caption: caption.trim() ? caption.trim() : null,
+      feeling: feeling.trim() ? feeling.trim() : null,
+      location: location.trim() ? location.trim() : null,
+      caption: caption.trim() ? caption.trim() : null,
     };
 
       try {
@@ -133,7 +133,7 @@ export default function Share({ addPost }) {
             {photoPreview && (
               <img
                 className="sharePreviewImg"
-                src={profilePicUrl}
+                src={photoPreview}
                 alt="preview"
                 onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
               />
@@ -177,7 +177,6 @@ export default function Share({ addPost }) {
             </div>
               <button className="shareButton" type="submit" disabled={busy || !input.trim()}>
                   {busy ? "Sharing..." : "Share"}
-              Share
             </button>
           </div>
 

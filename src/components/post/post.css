@@ -78,11 +78,13 @@
   color: #222;
 }
 
-.postImg {
-  width: 100%;
-  display: block;
-  max-height: 500px;
-  object-fit: contain;
+.postImg{
+    display:block;
+    width:100%;
+    height:auto;
+    max-height:500px;
+    object-fit:cover;
+    border-radius:12px;
 }
 
 /* Feelings & Location */
@@ -90,7 +92,7 @@
   background: #fcd7a4;
   font-weight: 600;
   font-size: 14px;
-  margin-right: 133px;
+  margin-right: 8px;
   border-radius: 12px;
   padding: 3px 14px;
   box-shadow: 0 1px 4px rgba(70, 8, 227, 0.13);
@@ -102,7 +104,7 @@
   color: #2c3e40;
   font-weight: 500;
   font-size: 14px;
-  margin-right: 133px;
+  margin-right: 0px;
   border-radius: 12px;
   padding: 4px 10px;
   display: inline-block;

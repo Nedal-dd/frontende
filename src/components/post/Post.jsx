@@ -20,17 +20,17 @@ function Post({ post, onDelete, onEdit }) {
   const [editForm, setEditForm] = useState({
     content: post.content || "",
     imageUrl: post.imageUrl || "",
-    Feeling: post.Feeling || "",
-    Location: post.Location || "",
-    Caption: post.Caption || "",
+    feeling: post.feeling || "",
+    location: post.location || "",
+    caption: post.caption || "",
   });
   useEffect(() => {
     setEditForm({
       content: post.content || "",
       imageUrl: post.imageUrl || "",
-      Feeling: post.Feeling || "",
-      Location: post.Location || "",
-      Caption: post.Caption || "",
+      feeling: post.feeling || "",
+      location: post.location || "",
+      caption: post.caption || "",
     });
     setLikeCount(post.likeCount ?? 0);
   }, [post]); // ✅ sync when parent gives a new/updated post
@@ -150,9 +150,9 @@ function Post({ post, onDelete, onEdit }) {
       const payload = {
         content: editForm.content ?? "",
         imageUrl: editForm.imageUrl ?? "",
-        Feeling: editForm.Feeling ?? null,
-        Location: editForm.Location ?? null,
-        Caption: editForm.Caption ?? null,
+        feeling: editForm.feeling ?? null,
+        location: editForm.location ?? null,
+        caption: editForm.caption ?? null,
       };
       const { data } = await PostsApi.update(post.id, payload);
       onEdit?.(post.id, data ?? payload); // parent updates post prop
@@ -239,12 +239,7 @@ function Post({ post, onDelete, onEdit }) {
             <span className="postDate">{createdAt}</span>
           </div>
           <div className="postTopRight">
-            {post.Feeling && (
-              <span className="postFeeling">feeling {post.Feeling}</span>
-            )}
-            {post.Location && (
-              <span className="postLocation">in {post.Location}</span>
-            )}
+
             {currentUser?.id === post.authorId && (
               <div className="postOptionsMenu">
                 <button
@@ -269,10 +264,10 @@ function Post({ post, onDelete, onEdit }) {
           {isEditingPost ? (
             <form onSubmit={submitEditPost} className="editPostForm">
               {[
-                ["Caption", "Caption"],
-                ["content", "Content"],
-                ["Feeling", "Feeling"],
-                ["Location", "Location"],
+                ["caption", "caption"],
+                ["content", "content"],
+                ["feeling", "feeling"],
+                ["location", "location"],
                 ["imageUrl", "Image URL"],
               ].map(([field, label]) => (
                 <input
@@ -301,12 +296,16 @@ function Post({ post, onDelete, onEdit }) {
             </form>
           ) : (
             <>
-              {post.Caption && (
-                <div className="postCaption">{post.Caption}</div>
-              )}
-              {post.content && <div className="postText">{post.content}</div>}
-              {post.imageUrl && (
-                <img className="postImg" src={post.imageUrl} alt="" />
+                {post.feeling && <span className="postFeeling">feeling {post.feeling}</span>}
+                {post.location && <span className="postLocation">in {post.location}</span>}
+                {post.caption && <div className="postCaption">{post.caption}</div>}
+                {post.imageUrl && (
+                    <img
+                        className="postImg"
+                        src={resolveAvatarSrc(post.imageUrl)}
+                        alt=""
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                />
               )}
             </>
           )}
