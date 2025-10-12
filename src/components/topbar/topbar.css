@@ -108,13 +108,14 @@
   cursor: pointer;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  margin-left: 20px;
-  color: white;
-  cursor: pointer;
-}  
+
+.logoImg {
+    width: 100px;   /* or any size you want */
+    height: 45px;
+    object-fit: cover;
+    margin-left: 15px;
+    cursor: pointer;
+}
 
 
 

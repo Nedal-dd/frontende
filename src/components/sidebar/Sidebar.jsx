@@ -13,7 +13,8 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ChatPopup from "../chatpopup/ChatPopup";
 import MatchChatBox from "../matchchatbox/MatchChatBox";
-import { MatchApi } from "../../api/api";
+import { MatchApi , ProfileApi } from "../../api/api";
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 
 export default function Sidebar() {
     const location = useLocation();
@@ -38,11 +39,13 @@ export default function Sidebar() {
                 const meRes = await fetch(`${import.meta.env.VITE_API_BASE}/auth/me`, {
                     credentials: "include",
                 });
+                console.log("::::::Me response status:", meRes.status);
                 if (!meRes.ok) {
                     if (isMounted) setErr("Not authenticated");
                     return;
                 }
                 const me = await meRes.json();
+                console.log("::::::Me response status:", me);
                 if (!isMounted) return;
                 setCurrentUser(me);
 
@@ -63,10 +66,29 @@ export default function Sidebar() {
                     `${import.meta.env.VITE_API_BASE}/api/users/${me.id}/friends`,
                     { credentials: "include" }
                 );
+                console.log("::::::frRes:",me.id );
                 if (!frRes.ok) throw new Error("Failed to load friends");
                 const fr = await frRes.json();
                 if (!isMounted) return;
-                setFriends(Array.isArray(fr) ? fr : []);
+                 const base = Array.isArray(fr) ? fr : [];
+                 // Profile-Bilder parallel nachladen
+                     const withPics = await Promise.all(
+                       base.map(async (u) => {
+                             try {
+                                  const { data } = await ProfileApi.getByUserId(u.id); // -> { urlProfilePicture: ... }
+                                   const raw = data?.urlProfilePicture
+                                         ?? u?.profilePictureUrl
+                                         ?? u?.profilePicture
+                                         ?? "";
+                                   return { ...u, profilePictureUrl: typeof raw === "string" ? raw.trim() : null };
+                                 } catch {
+                                   return { ...u, profilePictureUrl: null };
+                                 }
+                           })
+                    );
+                 if (!isMounted) return;
+                 setFriends(withPics);
+
 
                 // 4) current match id (204 => no match; 404 (legacy) => no match)
                 let matchId = null;
@@ -91,8 +113,11 @@ export default function Sidebar() {
                     try {
                         const { data } = await MatchApi.acceptedPeer(matchId);
 
+                        console.log("Accepted peer data:", data);
                         // normalize: allow object or array
                         const arr = Array.isArray(data) ? data : data ? [data] : [];
+
+                        console.log("arr",arr);
 
                         // map to the shape MatchChatBox expects (id, username, optional avatar)
                         const cleaned = arr
@@ -226,9 +251,10 @@ export default function Sidebar() {
                         friends.map((f) => (
                             <li className="sidebarFriend" key={f.id}>
                                 <img
-                                    src={f.profilePicture}
-                                    alt={f.username}
+                                    src={resolveAvatarSrc(f?.profilePictureUrl) }
                                     className="sidebarFriendImg"
+                                    alt={f?.username ?? "User"}
+                                    onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
                                 />
                                 <span className="sidebarFriendName">{f.username}</span>
                             </li>

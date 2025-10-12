@@ -72,7 +72,8 @@ export default function Feed() {
   const renderedPosts = useMemo(
     () =>
       posts.map((p) => (
-          console.log("p ist ",p),
+
+       //   console.log("p ist ",p),
         <Post key={p.id} post={p} onDelete={deletePost} onEdit={editPost} />
 
       )),

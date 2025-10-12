@@ -521,7 +521,9 @@ export default function Topbar({
             </div>
 
             <div className="topbarLeft">
-                <span className="logo">TierTreff Logo</span>
+                <span className="logo">
+                     <img  src="/assets/default-avatar.png" className="logoImg" alt="Logo" ></img>
+                </span>
             </div>
 
             <div className="topbarCenter">
@@ -586,7 +588,8 @@ export default function Topbar({
                     <div className="topbarIconItem"  onClick={() => handleIconClick("match")} title="Match requests">
 
                             <Beenhere />
-                            <Badge count={matchItems.length} />
+                        <span className="topbarIconBadge">{matchNotifs.length}</span>
+
 
                     </div>
 
@@ -594,7 +597,7 @@ export default function Topbar({
                     <div className="topbarIconItem"  onClick={() => handleIconClick("chat")} title="Chat messages">
 
                             <Chat />
-                            <Badge count={chatNotifs.length} />
+                        <span className="topbarIconBadge">{chatNotifs.length}</span>
 
                     </div>
 
@@ -620,11 +623,7 @@ export default function Topbar({
                                 )}
                                 {friendNotifs.map((n) => (
                                     <div className="matchRequestItem" key={n.id}>
-                                        <img
-                                            src={n.actor?.avatar || "/assets/default-avatar.png"}
-                                            alt={n.actor?.username || "User"}
-                                            className="matchProfileImg"
-                                        />
+
                                         <div className="matchInfo">
                                             <span className="matchName">{n.actor?.username || "User"}</span>
                                             <span className="matchMessage">sent you a friend request</span>

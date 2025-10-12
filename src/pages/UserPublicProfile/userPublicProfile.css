@@ -69,10 +69,9 @@
     box-shadow:0 4px 16px rgba(0,0,0,.18);
 }
 
-.profileButton--primary{
-    background:var(--primary);
-    color:white;
-}
+
+
+
 .profileButton--primary:hover{ background:var(--primary-600); transform:translateY(-1px); }
 .profileButton--success{
     background:var(--success);

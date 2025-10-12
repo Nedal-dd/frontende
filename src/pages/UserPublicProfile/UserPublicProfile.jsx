@@ -39,6 +39,9 @@ export default function UserPublicProfile() {
     const [friendStatus, setFriendStatus] = useState("NONE");
     const isPending = friendStatus === "PENDING";
     const isAccepted = friendStatus === "ACCEPTED";
+    //
+    const [friendshipId, setFriendshipId] = useState(null);   // für ACCEPTED -> delete
+    const [iAmRequester, setIAmRequester] = useState(false);  // bin ich der Sender?        // für PENDING  -> cancel
 
     const isSelf = useMemo(
         () => !!me && !!user && String(me.id) === String(user.id),
@@ -70,16 +73,34 @@ export default function UserPublicProfile() {
                     if (!abort) setProfile(null);
                 }
 
-                // Freundschafts-Status laden
+                // Freundschafts-Status laden (FriendshipDTO: { id, userId, friendId, status })
                 try {
                     const res = await FriendshipsApi.getStatus(userDto.id);
-                    if (!abort) setFriendStatus(normalizeStatus(res?.data?.status));
+                    const data = res?.data ?? {};
+                    const st = normalizeStatus(data.status);
+                    if (abort) return;
+                    setFriendStatus(st);
+                    // eine ID reicht für Cancel (PENDING) und Remove (ACCEPTED)
+                    setFriendshipId(data?.id ?? null);
+                    // bin ich der Sender? (für "Cancel Request")
+                    setIAmRequester(String(data?.userId) === String(meData.id));
                 } catch {
-                    if (!abort) setFriendStatus("NONE");
+                    if (!abort) {
+                        setFriendStatus("NONE");
+                        setFriendshipId(null);
+                        setIAmRequester(false);
+                    }
                 }
             } catch {
-                if (!abort) setError("Konnte Profil nicht laden.");
-            } finally {
+                   if (!abort) {
+                         setFriendStatus("NONE");
+                         setFriendshipId(null);
+                            setIAmRequester(false);
+                       }
+                 }
+
+
+            finally {
                 if (!abort) setLoading(false);
             }
         })();
@@ -112,6 +133,45 @@ export default function UserPublicProfile() {
             setFriendBusy(false);
         }
     };
+    // Cancel pending request
+    const handleCancelRequest = async () => {
+        if (!isPending || friendBusy || !iAmRequester) return;
+        try {
+            setFriendBusy(true);
+            setError("");
+            if (friendshipId) {
+                await FriendshipsApi.delete(friendshipId);
+            }
+            // Optimistic
+            setFriendStatus("NONE");
+            setFriendshipId(null);
+            setIAmRequester(false);
+        } catch (e) {
+            setError("Konnte Anfrage nicht abbrechen.");
+        } finally {
+            setFriendBusy(false);
+        }
+    };
+
+
+// Remove friendship (beidseitig beenden)
+    const handleRemoveFriend = async () => {
+        if (!isAccepted || friendBusy) return;
+        try {
+            setFriendBusy(true);
+            setError("");
+            if (friendshipId) await FriendshipsApi.delete(friendshipId);
+            // Optimistic
+            setFriendStatus("NONE");
+            setFriendshipId(null);
+            setIAmRequester(false);
+        } catch (e) {
+            setError("Konnte Freundschaft nicht löschen.");
+        } finally {
+            setFriendBusy(false);
+        }
+    };
+
 
     // Avatar-URL (Profil oder Default)
     const avatarUrl =
@@ -155,11 +215,34 @@ export default function UserPublicProfile() {
 
                                 {!isSelf && (
                                     isAccepted ? (
-                                        <span className="profileFriendChip">✓ Friends</span>
+                                        <div className="profileActions">
+                                            <span className="profileFriendChip">✓ Friends</span>
+                                            <button
+                                                className="profileButton profileButton--danger"
+                                                disabled={friendBusy}
+                                                onClick={handleRemoveFriend}
+                                                title="Remove friendship"
+                                            >
+                                                {friendBusy ? "Removing…" : "Remove Friendship"}
+                                            </button>
+                                        </div>
                                     ) : isPending ? (
-                                        <button className="profileButton profileButton--success" disabled>
-                                            Request pending…
-                                        </button>
+                                        <div className="profileActions">
+                                            <button className="profileButton profileButton--muted" disabled>
+                                                Request pending…
+                                            </button>
+                                            {iAmRequester && (
+                                                <button
+                                                    className="profileButton profileButton--secondary"
+                                                    disabled={friendBusy}
+                                                    onClick={handleCancelRequest}
+                                                    title="Cancel friend request"
+                                                >
+                                                    {friendBusy ? "Cancelling…" : "Cancel Request"}
+                                                </button>
+                                            )}
+                                        </div>
+
                                     ) : (
                                         <button
                                             className="profileButton profileButton--primary"
@@ -170,6 +253,9 @@ export default function UserPublicProfile() {
                                         </button>
                                     )
                                 )}
+
+
+
                             </div>
 
                             <hr className="profileDivider" />

@@ -54,7 +54,12 @@ export default function Profile() {
   );
     useEffect(() => {
         return () => {
-            if (photoPreview) URL.revokeObjectURL(photoPreview);
+            if (photoPreview)
+                URL.revokeObjectURL(photoPreview);
+            else
+                URL.revokeObjectURL(DEFAULT_AVATAR_URL);
+
+
         };
     }, [photoPreview]);
 
@@ -105,16 +110,7 @@ export default function Profile() {
     }
   };
 
-  // Simulate upload and get URL (replace with real upload logic)
-  const uploadPhotoAndGetUrl = async (file) => {
-    // TODO: Replace with real upload logic (e.g., upload to S3 or backend)
-    // For now, just return a fake URL after a short delay
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(URL.createObjectURL(file));
-      }, 800);
-    });
-  };
+
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -278,41 +274,6 @@ export default function Profile() {
             </button>
           </form>
 
-          <div className="profileCard">
-            <h2>Preview</h2>
-            {(photoPreview || form.urlProfilePicture) && (
-              <img
-
-                src={photoPreview || form.urlProfilePicture}
-
-                alt="Profile"
-                className="profilePhotoPreview"
-                style={{ marginBottom: 10 }}
-              />
-            )}
-            <p>
-              <b>About:</b> {form.bio || "—"}
-            </p>
-            <p>
-              <b>Location:</b> jetzt {form.location || "—"}
-            </p>
-            <p>
-              <b>Pet type:</b> {form.petTypeUi}
-            </p>
-            <p>
-              <b>Looking for:</b> {form.lookingForUi}
-            </p>
-            <p>
-              <b>Topics:</b> {form.topics || "—"}
-            </p>
-            <p>
-              <b>Days:</b> {form.days || "—"}
-            </p>
-            <p>
-              <b>Messages allowed:</b>{" "}
-              {form.allowMessagesUi === "yes" ? "Yes" : "No"}
-            </p>
-          </div>
         </div>
       </div>
     </>

@@ -352,9 +352,6 @@ export default function MatchContainer() {
                         return (
                             <div className="match-request" key={req.id}>
                                 <div className="match-user-info">
-                                    <div className="match-avatar" aria-hidden>
-                                        {req.authorUsername?.[0]?.toUpperCase() || "?"}
-                                    </div>
                                     <span className="match-username">{req.authorUsername}</span>
                                     <span className="match-date">
                     {req.createdAt

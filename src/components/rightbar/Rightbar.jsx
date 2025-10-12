@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import "./rightbar.css";
 import { Link } from "react-router-dom";
 import Online from "../online/online";
-import { PresenceApi } from "../../api/api"; // axios instance w/ baseURL + withCredentials
-
+import { PresenceApi } from "../../api/api";// axios instance w/ baseURL + withCredentials
+import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 export default function Rightbar() {
     const [onlineFriends, setOnlineFriends] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -58,9 +58,10 @@ export default function Rightbar() {
                 <hr className="sidebarHr" />
                 <h4 className="rightbarTitle">Online Friends</h4>
                 <ul className="rightbarFriendList">
-                    {onlineFriends.map((u) => (
-                        <Online key={u.id} user={u} />
-                    ))}
+                    {onlineFriends.map((u) => {
+                        const avatarUrl = resolveAvatarSrc(u?.profilePictureUrl) || DEFAULT_AVATAR_URL;
+                        return <Online key={u.id} user={u} avatarUrl={avatarUrl} />;
+                    })}
                 </ul>
             </div>
         </div>

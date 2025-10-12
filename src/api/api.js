@@ -80,8 +80,8 @@ export const PostsApi = {
         api.put(`/api/posts/${postId}/comments/${commentId}`, dto),
     deleteComment: (postId, commentId) =>
         api.delete(`/api/posts/${postId}/comments/${commentId}`),
-    like: (postId) => api.post(`/api/posts/${postId}/like`),
-    unlike: (postId) => api.post(`/api/posts/${postId}/unlike`),
+    like: (postId) => api.post(`/api/posts/${postId}/like` , {}),
+    unlike: (postId) => api.post(`/api/posts/${postId}/unlike` , {}),
     likeUsers: (postId) => api.get(`/api/posts/${postId}/likes`),
     likeCount: (postId) => api.get(`/api/posts/${postId}/likes/count`),
 };

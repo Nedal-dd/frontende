@@ -1,27 +1,24 @@
 // src/components/share/Share.jsx
-import { useMemo, useState, useEffect } from "react";
-import {
-  AddPhotoAlternate,
-  AddReaction,
-  Subtitles,
-  AddLocationAlt,
-} from "@mui/icons-material";
+import {  useState, useEffect } from "react";
+ import { AddPhotoAlternate,  AddReaction,  Subtitles, AddLocationAlt, } from "@mui/icons-material";
 import "./share.css";
 import {  ProfileApi } from "../../api/api";
 import { resolveAvatarSrc, DEFAULT_AVATAR_URL } from "../../utils/image";
 
 export default function Share({ addPost }) {
   const [input, setInput] = useState("");
-  const [photoFile, setPhotoFile] = useState(null);
+ // const [photoFile, setPhotoFile] = useState(null);
+    // const [photoInputKey, setPhotoInputKey] = useState(Date.now());
+    //const [showPhotoInput, setShowPhotoInput] = useState(false);
   const [feeling, setFeeling] = useState("");
   const [location, setLocation] = useState("");
   const [caption, setCaption] = useState("");
 
-  const [showPhotoInput, setShowPhotoInput] = useState(false);
+
   const [showFeelingInput, setShowFeelingInput] = useState(false);
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [showCaptionInput, setShowCaptionInput] = useState(false);
-  const [photoInputKey, setPhotoInputKey] = useState(Date.now());
+
     const [profilePicUrl, setProfilePicUrl] = useState(DEFAULT_AVATAR_URL);
     const [busy, setBusy] = useState(false);
 
@@ -37,31 +34,34 @@ export default function Share({ addPost }) {
   }, []);
 
   // Live preview URL for the selected image (not uploaded)
-  const photoPreview = useMemo(
+ /* const photoPreview = useMemo(
     () => (photoFile ? URL.createObjectURL(photoFile) : null),
     [photoFile]
-  );
+  );*/
+   /* const handlePhotoClick = (e) => {
+        e.preventDefault();
+        hideAllInputs();
+        setShowPhotoInput(true);
+        setPhotoInputKey(Date.now());
+    };*/
+
+    /*const handlePhotoChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setPhotoFile(e.target.files[0]); // preview only
+            hideAllInputs();
+        }
+    };*/
 
   const hideAllInputs = () => {
-    setShowPhotoInput(false);
+    //setShowPhotoInput(false);
     setShowFeelingInput(false);
     setShowLocationInput(false);
     setShowCaptionInput(false);
   };
 
-  const handlePhotoClick = (e) => {
-    e.preventDefault();
-    hideAllInputs();
-    setShowPhotoInput(true);
-    setPhotoInputKey(Date.now());
-  };
 
-  const handlePhotoChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setPhotoFile(e.target.files[0]); // preview only
-      hideAllInputs();
-    }
-  };
+
+
 
   const handleFeelingClick = (e) => {
     e.preventDefault();
@@ -92,7 +92,7 @@ export default function Share({ addPost }) {
     // Map empty strings to null so backend doesn’t store empty text
     const dto = {
       content: input.trim(),
-      imageUrl: null, // set real URL after you implement upload
+   //   imageUrl: null, // set real URL after you implement upload
       feeling: feeling.trim() ? feeling.trim() : null,
       location: location.trim() ? location.trim() : null,
       caption: caption.trim() ? caption.trim() : null,
@@ -103,7 +103,7 @@ export default function Share({ addPost }) {
           await addPost(dto); // Parent macht den Request und setzt den State
           // UI reset
           setInput("");
-          setPhotoFile(null);
+          //setPhotoFile(null);
           setFeeling("");
           setLocation("");
           setCaption("");
@@ -128,16 +128,9 @@ export default function Share({ addPost }) {
         </div>
 
         {/* --- Live Preview (shows before sending) --- */}
-        {(photoPreview || feeling || location || caption) && (
+          {(feeling || location || caption) && (
           <div className="sharePreview">
-            {photoPreview && (
-              <img
-                className="sharePreviewImg"
-                src={photoPreview}
-                alt="preview"
-                onError={(e) => (e.currentTarget.src = DEFAULT_AVATAR_URL)}
-              />
-            )}
+
             <div className="sharePreviewMeta">
               <div>
                 <strong>Feeling:</strong> {feeling || "—"}
@@ -156,10 +149,7 @@ export default function Share({ addPost }) {
 
         <form className="shareBottom" onSubmit={handleShare}>
           <div className="shareOptions">
-            <div className="shareOption" onClick={handlePhotoClick}>
-              <AddPhotoAlternate htmlColor="chocolate" className="shareIcon" />
-              <span className="shareOptionText">Photo</span>
-            </div>
+
             <div className="shareOption" onClick={handleFeelingClick}>
               <AddReaction htmlColor="#F1A438" className="shareIcon" />
               <span className="shareOptionText">Feeling</span>
@@ -180,16 +170,7 @@ export default function Share({ addPost }) {
             </button>
           </div>
 
-          {showPhotoInput && (
-            <input
-              type="file"
-              accept="image/*"
-              className="shareFileInputHidden"
-              onChange={handlePhotoChange}
-              key={photoInputKey}
-              ref={(input) => input && input.click()}
-            />
-          )}
+
 
           {showFeelingInput && (
             <input
